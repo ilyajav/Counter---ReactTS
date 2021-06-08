@@ -48,7 +48,7 @@
     height: 40px;
 }
 
-.valueMax{
-    color: red;
+.errorInput {
+    background-color: crimson;
 }
 
