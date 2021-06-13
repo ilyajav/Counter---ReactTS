@@ -5,40 +5,42 @@ import {SetCounter} from "./setCounter/SetCounter";
 
 
 function App() {
-    const [startValue, setStartValue] = useState<number>(0)
-    const [stopValue, setStopValue] = useState<number>(0)
+    const [minValue, setMinValue] = useState<number>(0)
+    const [maxValue, setMaxValue] = useState<number>(0)
     const [onCounter, setOnCounter] = useState(false)
     const [text, setText] = useState<string>('enter values and press set')
-
+    const [error, setError] = useState<boolean>(false)
 
     const increaseValue = () => {
-        setStartValue(startValue + 1)
+        setMinValue(minValue + 1)
     }
 
     const resetCounter = () => {
-        setStartValue(0)
         setOnCounter(false)
     }
 
-    const changeValue = (min: number, max: number) =>{
-        setStartValue(min)
-        setStopValue(max)
+    const changeValues = (min: number, max: number) =>{
+        setMinValue(min)
+        setMaxValue(max)
+        localStorage.setItem('minValue', JSON.stringify(min))
+        localStorage.setItem('maxValue', JSON.stringify(max))
     }
 
     return (
         <div className="App">
             <SetCounter
-                changeValue={changeValue}
+                changeValues={changeValues}
                 setOnCounter={setOnCounter}
                 onCounter={onCounter}
                 setText={setText}
-                text={text}
+                setError={setError}
+                error={error}
             />
             <Counter
-                startValue={startValue}
+                minValue={minValue}
                 increaseValue={increaseValue}
                 resetCounter={resetCounter}
-                stopValue={stopValue}
+                maxValue={maxValue}
                 onCounter={onCounter}
                 text={text}
             />

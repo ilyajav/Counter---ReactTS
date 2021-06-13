@@ -3,8 +3,8 @@ import style from './Counter.module.css'
 
 
 type CounterType = {
-    startValue: number;
-    stopValue: number;
+    minValue: number;
+    maxValue: number;
     increaseValue: () => void;
     resetCounter: () => void;
     onCounter: boolean;
@@ -12,10 +12,10 @@ type CounterType = {
 }
 
 export const Counter: FC<CounterType> = ({
-                                             startValue,
+                                             minValue,
                                              increaseValue,
                                              resetCounter,
-                                             stopValue,
+                                             maxValue,
                                              onCounter,
                                              text
                                          }) => {
@@ -24,19 +24,19 @@ export const Counter: FC<CounterType> = ({
         <div className={style.counter}>
             <div className={style.firstSection}>
                 <span
-                    className={text === 'Incorrect value' ? style.valueMax : ''}>{!onCounter ?
+                    className={text === 'Incorrect value' || minValue === maxValue && onCounter ? style.valueMax : ''}>{!onCounter ?
                     text
-                    : startValue
+                    : minValue
                 }</span>
             </div>
             <div className={style.twiceSection}>
                 <div className={style.incButton}>
                     <button onClick={increaseValue}
-                            disabled={startValue === stopValue || text === 'Incorrect value'}>inc
+                            disabled={minValue === maxValue || text === 'Incorrect value'}>inc
                     </button>
                 </div>
                 <div className={style.resetButton}>
-                    <button onClick={resetCounter} disabled={startValue < stopValue || !onCounter}>reset</button>
+                    <button onClick={resetCounter} disabled={minValue < maxValue || !onCounter}>reset</button>
                 </div>
             </div>
         </div>

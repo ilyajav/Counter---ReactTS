@@ -1,40 +1,65 @@
 import style from './setCounter.module.css'
-import {ChangeEvent, FC, useState} from "react";
+import {ChangeEvent, FC, useEffect, useState} from "react";
 import classNames from 'classnames'
 
 type SetCounterType = {
-    changeValue: (min: number, max: number) => void;
+    changeValues: (min: number, max: number) => void;
     setOnCounter: (value: boolean) => void;
     onCounter: boolean;
     setText: (value: string) => void;
-    text: string;
+    setError: (value: boolean) => void;
+    error: boolean;
 }
 
-export const SetCounter: FC<SetCounterType> = ({changeValue, setOnCounter, onCounter, setText, text}) => {
+export const SetCounter: FC<SetCounterType> = ({
+                                                   changeValues,
+                                                   setOnCounter,
+                                                   onCounter,
+                                                   setText,
+                                                   setError,
+                                                   error
+                                               }) => {
 
     const [minValue, setMinValue] = useState<string>()
     const [maxValue, setMaxValue] = useState<string>()
-    const [error, setError] = useState<boolean>(false)
+
+    useEffect(() => {
+        const oldMinValue = localStorage.getItem('minValue')
+        const oldMaxValue = localStorage.getItem('maxValue')
+        if (oldMaxValue && oldMinValue) {
+            setMaxValue(oldMaxValue)
+            setMinValue(oldMinValue)
+        }
+    }, [])
+
+    useEffect( () =>{
+        if (minValue && maxValue) {
+            if (+minValue < +maxValue && +minValue >= 0) {
+                setError(false)
+                setText('enter values and press set')
+            } else {
+                setError(true)
+                setText('Incorrect value')
+            }
+        }
+        else if(minValue === '' || maxValue === ''){
+            setError(true)
+            setText('Incorrect value')
+        }
+    }, [maxValue, minValue])
 
     const onSetMax = (e: ChangeEvent<HTMLInputElement>) => {
         setMaxValue(e.currentTarget.value)
-        setError(false)
     }
     const onSetMin = (e: ChangeEvent<HTMLInputElement>) => {
         setMinValue(e.currentTarget.value)
-        setError(false)
     }
-    const onChangeValue = () => {
+
+    const onChangeValues = () => {
         if (minValue && maxValue) {
             if (+minValue < +maxValue) {
-                changeValue(+minValue, +maxValue)
+                changeValues(+minValue, +maxValue)
                 setOnCounter(true)
-                if (text === 'Incorrect value') {
-                    setText('enter values and press set')
-                }
-            } else {
-                setText('Incorrect value')
-                setError(true)
             }
         }
     }
@@ -44,22 +69,26 @@ export const SetCounter: FC<SetCounterType> = ({changeValue, setOnCounter, onCou
         <div className={style.setCounter}>
             <div className={style.firstSection}>
                 <div>
-                    <span>max value:</span><input
+                    <span>max value:</span>
+                    <input
                     type='number'
                     className={classNames(style.maxInput, error ? style.errorInput : '')}
+                    disabled={onCounter}
                     value={maxValue}
                     onChange={onSetMax}/>
                 </div>
                 <div>
-                    <span>min value:</span><input
-                    type='number'
-                    className={classNames(style.minInput, error ? style.errorInput : '')}
-                    value={minValue}
-                    onChange={onSetMin}/>
+                    <span>min value:</span>
+                    <input
+                        type='number'
+                        disabled={onCounter}
+                        className={classNames(style.minInput, error ? style.errorInput : '')}
+                        value={minValue}
+                        onChange={onSetMin}/>
                 </div>
             </div>
             <div className={style.twiceSection}>
-                <button disabled={onCounter} onClick={onChangeValue}>Set</button>
+                <button disabled={onCounter || error} onClick={onChangeValues}>Set</button>
             </div>
         </div>
     )
