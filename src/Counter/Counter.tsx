@@ -36,7 +36,7 @@ export const Counter: FC<CounterType> = ({
                     </button>
                 </div>
                 <div className={style.resetButton}>
-                    <button onClick={resetCounter} disabled={minValue < maxValue || !onCounter}>reset</button>
+                    <button onClick={resetCounter} disabled={!onCounter}>reset</button>
                 </div>
             </div>
         </div>

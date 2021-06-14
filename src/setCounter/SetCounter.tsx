@@ -20,8 +20,8 @@ export const SetCounter: FC<SetCounterType> = ({
                                                    error
                                                }) => {
 
-    const [minValue, setMinValue] = useState<string>()
-    const [maxValue, setMaxValue] = useState<string>()
+    const [minValue, setMinValue] = useState<string>('0')
+    const [maxValue, setMaxValue] = useState<string>('1')
 
     useEffect(() => {
         const oldMinValue = localStorage.getItem('minValue')
@@ -32,25 +32,24 @@ export const SetCounter: FC<SetCounterType> = ({
         }
     }, [])
 
-    useEffect( () =>{
-        if (minValue && maxValue) {
-            if (+minValue < +maxValue && +minValue >= 0) {
-                setError(false)
-                setText('enter values and press set')
-            } else {
-                setError(true)
-                setText('Incorrect value')
-            }
-        }
-        else if(minValue === '' || maxValue === ''){
+    if (minValue && maxValue) {
+        if (+minValue < +maxValue && +minValue >= 0) {
+            setError(false)
+            setText('enter values and press set')
+        } else {
             setError(true)
             setText('Incorrect value')
         }
-    }, [maxValue, minValue])
+    }
+    else if(minValue === '' || minValue !== ''){
+        setError(true)
+        setText('Incorrect value')
+    }
 
     const onSetMax = (e: ChangeEvent<HTMLInputElement>) => {
         setMaxValue(e.currentTarget.value)
     }
+
     const onSetMin = (e: ChangeEvent<HTMLInputElement>) => {
         setMinValue(e.currentTarget.value)
     }
@@ -63,7 +62,6 @@ export const SetCounter: FC<SetCounterType> = ({
             }
         }
     }
-
 
     return (
         <div className={style.setCounter}>
