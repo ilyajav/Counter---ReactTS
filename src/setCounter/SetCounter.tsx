@@ -1,6 +1,9 @@
 import style from './setCounter.module.css'
-import {ChangeEvent, FC, useEffect, useState} from "react";
+import {ChangeEvent, FC} from "react";
 import classNames from 'classnames'
+import {useDispatch, useSelector} from "react-redux";
+import {AppStateType} from "../bll/store";
+import {changeMaxValueStringAC, changeMinValueStringAC} from "../bll/setCounter-reducer";
 
 type SetCounterType = {
     changeValues: (min: number, max: number) => void;
@@ -20,17 +23,10 @@ export const SetCounter: FC<SetCounterType> = ({
                                                    error
                                                }) => {
 
-    const [minValue, setMinValue] = useState<string>('0')
-    const [maxValue, setMaxValue] = useState<string>('1')
+    const minValue = useSelector<AppStateType, string>(state => state.setCounter.minValueString)
+    const maxValue = useSelector<AppStateType, string>(state => state.setCounter.maxValueString)
 
-    useEffect(() => {
-        const oldMinValue = localStorage.getItem('minValue')
-        const oldMaxValue = localStorage.getItem('maxValue')
-        if (oldMaxValue && oldMinValue) {
-            setMaxValue(oldMaxValue)
-            setMinValue(oldMinValue)
-        }
-    }, [])
+    const dispatch = useDispatch()
 
     if (minValue && maxValue) {
         if (+minValue < +maxValue && +minValue >= 0) {
@@ -47,11 +43,11 @@ export const SetCounter: FC<SetCounterType> = ({
     }
 
     const onSetMax = (e: ChangeEvent<HTMLInputElement>) => {
-        setMaxValue(e.currentTarget.value)
+        dispatch(changeMaxValueStringAC(e.currentTarget.value))
     }
 
     const onSetMin = (e: ChangeEvent<HTMLInputElement>) => {
-        setMinValue(e.currentTarget.value)
+        dispatch(changeMinValueStringAC(e.currentTarget.value))
     }
 
     const onChangeValues = () => {

@@ -2,17 +2,21 @@ import React, {useState} from 'react';
 import './App.css';
 import {Counter} from "./Counter/Counter";
 import {SetCounter} from "./setCounter/SetCounter";
+import {useDispatch, useSelector} from "react-redux";
+import {AppStateType} from "./bll/store";
+import {changeMaxValueAC, changeMinValueAC, increaseMinValueAC} from "./bll/counter-reducer";
 
 
 function App() {
-    const [minValue, setMinValue] = useState<number>(0)
-    const [maxValue, setMaxValue] = useState<number>(0)
+    const minValue = useSelector<AppStateType, number>((state => state.counter.minValue))
+    const maxValue = useSelector<AppStateType, number>(state => state.counter.maxValue)
+    const dispatch = useDispatch()
     const [onCounter, setOnCounter] = useState(false)
     const [text, setText] = useState<string>('enter values and press set')
     const [error, setError] = useState<boolean>(false)
 
     const increaseValue = () => {
-        setMinValue(minValue + 1)
+        dispatch(increaseMinValueAC())
     }
 
     const resetCounter = () => {
@@ -20,10 +24,8 @@ function App() {
     }
 
     const changeValues = (min: number, max: number) =>{
-        setMinValue(min)
-        setMaxValue(max)
-        localStorage.setItem('minValue', JSON.stringify(min))
-        localStorage.setItem('maxValue', JSON.stringify(max))
+        dispatch(changeMinValueAC(min))
+        dispatch(changeMaxValueAC(max))
     }
 
     return (
