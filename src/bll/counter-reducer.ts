@@ -1,24 +1,14 @@
+
 export type InitialState = typeof initialState
 
-type ChangeMaxValueActionCreator = {
-    type: 'CHANGE-MAX-VALUE',
-    value: number
-}
 
-type ChangeMinValueActionCreator = {
-    type: 'CHANGE-MIN-VALUE',
-    value: number
-}
 
-type IncreaseMinValueActionCreator = {
-    type: 'INCREASE-MIN-VALE'
-}
-
-type CounterActionsTypes = ChangeMaxValueActionCreator | ChangeMinValueActionCreator | IncreaseMinValueActionCreator
+type CounterActionsTypes = ReturnType<typeof changeMinValueAC> | ReturnType<typeof changeMaxValueAC> | ReturnType<typeof increaseCounterValueAC>
 
 const initialState = {
-    maxValue: 0,
+    maxValue: 1,
     minValue: 0,
+    counter: 0,
 }
 
 export const counterReducer = (state: InitialState = initialState, action: CounterActionsTypes): InitialState => {
@@ -31,34 +21,35 @@ export const counterReducer = (state: InitialState = initialState, action: Count
         case 'CHANGE-MIN-VALUE':
             return {
                 ...state,
-                minValue: state.minValue = action.value
+                minValue: state.minValue = action.value,
+                counter: state.counter = state.minValue
             }
-        case 'INCREASE-MIN-VALE':
+        case 'INCREASE-COUNTER-VALUE':
             return {
                 ...state,
-                minValue: state.minValue + 1
+                counter: state.counter + 1
             }
         default:
             return state
     }
 }
 
-export const changeMaxValueAC = (value: number): ChangeMaxValueActionCreator => {
+export const changeMaxValueAC = (value: number) => {
     return {
         type: 'CHANGE-MAX-VALUE',
         value
-    }
+    } as const
 }
 
-export const changeMinValueAC = (value: number): ChangeMinValueActionCreator => {
+export const changeMinValueAC = (value: number) => {
     return {
         type: 'CHANGE-MIN-VALUE',
         value
-    }
+    } as const
 }
 
-export const increaseMinValueAC = () => {
+export const increaseCounterValueAC = () => {
     return {
-        type: 'INCREASE-MIN-VALE',
+        type: 'INCREASE-COUNTER-VALUE',
     } as const
 }

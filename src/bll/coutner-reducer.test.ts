@@ -1,11 +1,18 @@
-import {changeMaxValueAC, changeMinValueAC, counterReducer, increaseMinValueAC, InitialState} from "./counter-reducer";
+import {
+    changeMaxValueAC,
+    changeMinValueAC,
+    counterReducer,
+    increaseCounterValueAC,
+    InitialState
+} from "./counter-reducer";
 
 let state: InitialState
 
 beforeEach(() =>{
     state = {
         minValue: 5,
-        maxValue: 8
+        maxValue: 8,
+        counter: 1
     }
 })
 
@@ -23,12 +30,13 @@ test('min value must be changed', () =>{
     const endState = counterReducer(state,action)
 
     expect(endState.minValue).toBe(2)
+    expect(endState.counter).toBe(endState.minValue)
 })
 
 test('increase min value', () =>{
 
-    const action = increaseMinValueAC()
+    const action = increaseCounterValueAC()
     const endState = counterReducer(state, action)
 
-    expect(endState.minValue).toBe(6)
+    expect(endState.counter).toBe(2)
 })

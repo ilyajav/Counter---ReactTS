@@ -1,9 +1,11 @@
 import style from './setCounter.module.css'
-import {ChangeEvent, FC} from "react";
+import {ChangeEvent, FC, useEffect} from "react";
 import classNames from 'classnames'
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../bll/store";
-import {changeMaxValueStringAC, changeMinValueStringAC} from "../bll/setCounter-reducer";
+import {changeMaxValueAC, changeMinValueAC} from "../bll/counter-reducer";
+import {ButtonForm} from "../ButtonForm/ButtonForm";
+
 
 type SetCounterType = {
     changeValues: (min: number, max: number) => void;
@@ -23,40 +25,36 @@ export const SetCounter: FC<SetCounterType> = ({
                                                    error
                                                }) => {
 
-    const minValue = useSelector<AppStateType, string>(state => state.setCounter.minValueString)
-    const maxValue = useSelector<AppStateType, string>(state => state.setCounter.maxValueString)
+    const minValue = useSelector<AppStateType, number>(state => state.counter.minValue)
+    const maxValue = useSelector<AppStateType, number>(state => state.counter.maxValue)
 
     const dispatch = useDispatch()
 
-    if (minValue && maxValue) {
-        if (+minValue < +maxValue && +minValue >= 0) {
+    useEffect(() => {
+        if (minValue < maxValue && minValue >= 0) {
             setError(false)
             setText('enter values and press set')
+        } else if (minValue < 0 || minValue === undefined) {
+            setError(true)
+            setText('Incorrect value')
         } else {
             setError(true)
             setText('Incorrect value')
         }
-    }
-    else if(minValue === '' || minValue !== ''){
-        setError(true)
-        setText('Incorrect value')
-    }
+    }, [minValue, maxValue])
+
 
     const onSetMax = (e: ChangeEvent<HTMLInputElement>) => {
-        dispatch(changeMaxValueStringAC(e.currentTarget.value))
+        dispatch(changeMaxValueAC(+e.currentTarget.value))
     }
 
     const onSetMin = (e: ChangeEvent<HTMLInputElement>) => {
-        dispatch(changeMinValueStringAC(e.currentTarget.value))
+        dispatch(changeMinValueAC(+e.currentTarget.value))
     }
 
     const onChangeValues = () => {
-        if (minValue && maxValue) {
-            if (+minValue < +maxValue) {
-                changeValues(+minValue, +maxValue)
-                setOnCounter(true)
-            }
-        }
+        changeValues(minValue, maxValue)
+        setOnCounter(true)
     }
 
     return (
@@ -65,11 +63,11 @@ export const SetCounter: FC<SetCounterType> = ({
                 <div>
                     <span>max value:</span>
                     <input
-                    type='number'
-                    className={classNames(style.maxInput, error ? style.errorInput : '')}
-                    disabled={onCounter}
-                    value={maxValue}
-                    onChange={onSetMax}/>
+                        type='number'
+                        className={classNames(style.maxInput, error ? style.errorInput : '')}
+                        disabled={onCounter}
+                        value={maxValue.toString()}
+                        onChange={onSetMax}/>
                 </div>
                 <div>
                     <span>min value:</span>
@@ -77,12 +75,13 @@ export const SetCounter: FC<SetCounterType> = ({
                         type='number'
                         disabled={onCounter}
                         className={classNames(style.minInput, error ? style.errorInput : '')}
-                        value={minValue}
+                        value={minValue.toString()}
                         onChange={onSetMin}/>
                 </div>
             </div>
             <div className={style.twiceSection}>
-                <button disabled={onCounter || error} onClick={onChangeValues}>Set</button>
+                <ButtonForm buttonText={'Set'} onChangeValues={onChangeValues}
+                            disabled={onCounter || error}/>
             </div>
         </div>
     )

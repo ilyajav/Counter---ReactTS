@@ -1,5 +1,6 @@
 import {FC} from "react";
 import style from './Counter.module.css'
+import {ButtonForm} from "../ButtonForm/ButtonForm";
 
 
 type CounterType = {
@@ -17,7 +18,7 @@ export const Counter: FC<CounterType> = ({
                                              resetCounter,
                                              maxValue,
                                              onCounter,
-                                             text
+                                             text,
                                          }) => {
 
     return (
@@ -31,12 +32,11 @@ export const Counter: FC<CounterType> = ({
             </div>
             <div className={style.twiceSection}>
                 <div className={style.incButton}>
-                    <button onClick={increaseValue}
-                            disabled={minValue === maxValue || text === 'Incorrect value'}>inc
-                    </button>
+                    <ButtonForm buttonText={'inc'} onChangeValues={increaseValue}
+                                disabled={minValue === maxValue || text === 'Incorrect value' || !onCounter}/>
                 </div>
                 <div className={style.resetButton}>
-                    <button onClick={resetCounter} disabled={!onCounter}>reset</button>
+                    <ButtonForm buttonText={'reset'} onChangeValues={resetCounter} disabled={!onCounter}/>
                 </div>
             </div>
         </div>
