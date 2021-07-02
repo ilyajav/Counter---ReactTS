@@ -19,4 +19,4 @@ export const saveState = (state: AppStateType) => {
     } catch {
         // ignore write errors
     }
-};
+}

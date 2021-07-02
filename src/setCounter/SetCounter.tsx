@@ -6,7 +6,6 @@ import {AppStateType} from "../bll/store";
 import {changeMaxValueAC, changeMinValueAC} from "../bll/counter-reducer";
 import {ButtonForm} from "../ButtonForm/ButtonForm";
 
-
 type SetCounterType = {
     changeValues: (min: number, max: number) => void;
     setOnCounter: (value: boolean) => void;
@@ -24,7 +23,6 @@ export const SetCounter: FC<SetCounterType> = ({
                                                    setError,
                                                    error
                                                }) => {
-
     const minValue = useSelector<AppStateType, number>(state => state.counter.minValue)
     const maxValue = useSelector<AppStateType, number>(state => state.counter.maxValue)
 
@@ -33,14 +31,16 @@ export const SetCounter: FC<SetCounterType> = ({
     useEffect(() => {
         if (minValue < maxValue && minValue >= 0) {
             setError(false)
-            setText('enter values and press set')
-        } else if (minValue < 0 || minValue === undefined) {
-            setError(true)
-            setText('Incorrect value')
-        } else {
-            setError(true)
-            setText('Incorrect value')
+            return setText('enter values and press set')
         }
+
+        if (minValue < 0 || minValue === undefined) {
+            setError(true)
+            return setText('Incorrect value')
+        }
+
+        setError(true)
+        setText('Incorrect value')
     }, [minValue, maxValue])
 
 
@@ -64,17 +64,22 @@ export const SetCounter: FC<SetCounterType> = ({
                     <span>max value:</span>
                     <input
                         type='number'
-                        className={classNames(style.maxInput, error ? style.errorInput : '')}
+                        className={classNames(style.maxInput, error
+                            ? style.errorInput
+                            : '')}
                         disabled={onCounter}
                         value={maxValue.toString()}
-                        onChange={onSetMax}/>
+                        onChange={onSetMax}
+                    />
                 </div>
                 <div>
                     <span>min value:</span>
                     <input
                         type='number'
                         disabled={onCounter}
-                        className={classNames(style.minInput, error ? style.errorInput : '')}
+                        className={classNames(style.minInput, error
+                            ? style.errorInput
+                            : '')}
                         value={minValue.toString()}
                         onChange={onSetMin}/>
                 </div>

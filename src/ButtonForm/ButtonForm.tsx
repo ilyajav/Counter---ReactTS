@@ -6,8 +6,17 @@ type ButtonFormPropsType = {
     disabled: boolean
 }
 
-export const ButtonForm: FC<ButtonFormPropsType> = ({buttonText, onChangeValues, disabled}) => {
+export const ButtonForm: FC<ButtonFormPropsType> = ({
+    buttonText,
+    onChangeValues,
+    disabled
+}) => {
     return (
-        <button disabled={disabled} onClick={onChangeValues}>{buttonText}</button>
+        <button
+            disabled={disabled}
+            onClick={onChangeValues}
+        >
+            {buttonText}
+        </button>
     )
 }

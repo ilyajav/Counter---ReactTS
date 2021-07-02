@@ -2,7 +2,6 @@ import {FC} from "react";
 import style from './Counter.module.css'
 import {ButtonForm} from "../ButtonForm/ButtonForm";
 
-
 type CounterType = {
     minValue: number;
     maxValue: number;
@@ -18,25 +17,36 @@ export const Counter: FC<CounterType> = ({
                                              resetCounter,
                                              maxValue,
                                              onCounter,
-                                             text,
+                                             text
                                          }) => {
+    const condition1 = (
+        text === 'Incorrect value' || minValue === maxValue
+    ) && onCounter ? style.valueMax : ''
+    const condition2 = (minValue === maxValue) ||
+        (text === 'Incorrect value') ||
+        !onCounter
 
     return (
         <div className={style.counter}>
             <div className={style.firstSection}>
-                <span
-                    className={text === 'Incorrect value' || minValue === maxValue && onCounter ? style.valueMax : ''}>{!onCounter ?
-                    text
-                    : minValue
-                }</span>
+                <span className={condition1}>
+                    {!onCounter ? text : minValue}
+                </span>
             </div>
             <div className={style.twiceSection}>
                 <div className={style.incButton}>
-                    <ButtonForm buttonText={'inc'} onChangeValues={increaseValue}
-                                disabled={minValue === maxValue || text === 'Incorrect value' || !onCounter}/>
+                    <ButtonForm
+                        buttonText={'inc'}
+                        onChangeValues={increaseValue}
+                        disabled={condition2}
+                    />
                 </div>
                 <div className={style.resetButton}>
-                    <ButtonForm buttonText={'reset'} onChangeValues={resetCounter} disabled={!onCounter}/>
+                    <ButtonForm
+                        buttonText={'reset'}
+                        onChangeValues={resetCounter}
+                        disabled={!onCounter}
+                    />
                 </div>
             </div>
         </div>
